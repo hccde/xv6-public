@@ -6,7 +6,6 @@
 # The BIOS loads this code from the first sector of the hard disk into
 # memory at physical address 0x7c00 and starts executing in real mode
 # with %cs=0 %ip=7c00.
-
 .code16                       # Assemble for 16-bit mode
 .globl start
 start:
@@ -24,6 +23,11 @@ seta20.1:
   inb     $0x64,%al               # Wait for not busy
   testb   $0x2,%al
   jnz     seta20.1
+# printA:
+#   movb $0x0e,%ah
+#   movb $65,%al
+#   int $0x10
+
 
   movb    $0xd1,%al               # 0xd1 -> port 0x64
   outb    %al,$0x64
@@ -35,7 +39,6 @@ seta20.2:
 
   movb    $0xdf,%al               # 0xdf -> port 0x60
   outb    %al,$0x60
-
   # Switch from real to protected mode.  Use a bootstrap GDT that makes
   # virtual addresses map directly to physical addresses so that the
   # effective memory map doesn't change during the transition.
@@ -84,5 +87,5 @@ gdt:
 
 gdtdesc:
   .word   (gdtdesc - gdt - 1)             # sizeof(gdt) - 1
-  .long   gdt                             # address gdt
-
+  .long   gdt                             # address gdt 
+ 
